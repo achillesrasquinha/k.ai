@@ -1,0 +1,27 @@
+{
+  "name": "k.ai",
+  "description": "A female chatbot assistant",
+  "main": "",
+  "authors": [
+    "Achilles Rasquinha"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "female",
+    "chat",
+    "chatbot",
+    "assistant",
+    "ai"
+  ],
+  "homepage": "https://github.com/achillesrasquinha/k.ai",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "eonasdan-bootstrap-datetimepicker": "^4.17.45"
+  }
+}

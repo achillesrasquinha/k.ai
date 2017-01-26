@@ -1,0 +1,12 @@
+- var TITLE   = 'k.ai'
+- var CHARSET = 'utf-8'
+
+head
+  meta(charset=CHARSET)
+  meta(http-equiv='X-UA-Compatible', content='IE=Edge')
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  if title
+    title #{title} | #{TITLE}
+  else
+    title #{TITLE}
+  include styles

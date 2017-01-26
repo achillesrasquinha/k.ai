@@ -1,0 +1,8 @@
+.chatScreen
+{
+  > .jumbotron {
+    height: 100vh;
+    margin: 0 !important;
+    overflow-y: scroll;
+  }
+}
