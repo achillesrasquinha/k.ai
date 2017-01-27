@@ -68,7 +68,9 @@ class SignUpForm extends React.Component {
        })
 
        this.props.onSubmit(this.state)
-                 .then(( )   => { this.context.router.push(ClientConfig.URL.BASE) },
+                 .then(( )   => {
+                          this.context.router.push(ClientConfig.URL.BASE)
+                        },
                        (err) => { this.setState({ errors: err.response.data.errors, isLoading: false }) })
     }
   }
@@ -173,7 +175,7 @@ SignUpForm.propTypes     = {
 }
 
 SignUpForm.contextTypes  = {
-  router: React.PropTypes.object.isRequired
+  router:   React.PropTypes.object.isRequired
 }
 
 SignUpForm.defaultProps  = {

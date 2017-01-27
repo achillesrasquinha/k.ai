@@ -1,16 +1,15 @@
 import express from 'express'
 import _ from 'lodash'
-import passport from 'passport'
 
 import ServerConfig from './../config/ServerConfig'
 import { validateUser } from './../utils/Validators'
 import User from './../models/account/User'
 import Logger from './../utils/Logger'
 
-const registerUserRouter = express.Router()
-const loginUserRouter    = express.Router()
+const signUpUserRouter = express.Router()
+const signInUserRouter = express.Router()
 
-registerUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
+signUpUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 	const user      = req.body
 
 	Logger.info('Recieved user registration data: ' + JSON.stringify(user))
@@ -18,7 +17,7 @@ registerUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 	let   response  = validateUser(user)
 
 	if ( _.isEqual(response.status, ServerConfig.App.Status.VALIDATION_SUCCESS) ) {
-		User.getUserByEmail(user, (err, user) => {
+		User.getUserByEmail(user.email, (err, user) => {
 			if ( err ) {
 				throw err
 				res.status(500).json({ status: ServerConfig.App.Status.REGISTRATION_FAILURE })
@@ -31,7 +30,7 @@ registerUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 					const userObj = new User({
 						firstname:   user.firstname,
 						lastname:    user.lastname,
-						email: 		   user.email,
+						email: 		 user.email,
 						password:    user.password,
 						sexCode:     user.sexCode,
 						countryCode: user.countryCode,
@@ -54,9 +53,48 @@ registerUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 	}
 })
 
-loginUserRouter.post(ServerConfig.URL.SEPERATOR, passport.authenticate('local', {
-	sucessRedirect: ServerConfig.URL.BASE,
-	failureRedirect: ServerConfig.URL.SIGNIN
-}))
+signInUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
+	const credentials = req.body
 
-export { registerUserRouter, loginUserRouter }
+	Logger.info('Recieved credentials data: ' + JSON.stringify(credentials))
+
+	let   response    = validateUser(credentials)
+
+	if ( _.isEqual(response.status, ServerConfig.App.Status.VALIDATION_SUCCESS) ) {
+		Logger.info('Authenticating user')
+
+		User.getUserByEmail(credentials.email, function (err, user) {
+			if ( err ) {
+				throw err
+				res.status(500).json({ status: ServerConfig.App.Status.SIGNIN_FAILURE })
+			} else {
+				if ( !user ) {
+					Logger.info('User does not exists')
+					response.status       = ServerConfig.App.Status.SIGNIN_FAILURE
+					response.errors.email = ServerConfig.App.Error.USER_DOES_NOT_EXISTS
+					res.status(400).json(response)
+				} else {
+					User.matchPassword(credentials.password, user.password, function (err, match) {
+						if ( err ) {
+							throw err
+						} else {
+							if ( match ) {
+								Logger.info('Password matches')
+								res.status(200).json({ status: ServerConfig.App.Status.SIGNIN_SUCCESS })
+							} else {
+								Logger.info('Password does not match')
+								response.status          = ServerConfig.App.Status.SIGNIN_FAILURE
+								response.errors.password = ServerConfig.App.Error.PASSWORD_DOES_NOT_MATCH
+								res.status(400).json(response)
+							}
+						}
+					})
+				}
+			}
+		})
+	}  else {
+		res.status(400).json(response)
+	}
+})
+
+export { signUpUserRouter, signInUserRouter }

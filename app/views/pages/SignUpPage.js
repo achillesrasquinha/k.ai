@@ -5,7 +5,7 @@ import ClientConfig from './../../config/ClientConfig'
 import AppBar from './../components/AppBar'
 import SignUpForm from './../components/account/SignUpForm'
 import SocialLoginForm from './../components/account/SocialLoginForm'
-import { signUpRequest } from './../../../app/client/actions/SignUpActions'
+import { signUpRequest } from './../../client/actions/SignUpActions'
 
 class SignUpPage extends React.Component {
   render() {
@@ -32,11 +32,11 @@ class SignUpPage extends React.Component {
 }
 
 SignUpPage.propTypes     = {
-  signUpRequest: React.PropTypes.func.isRequired
+  signUpRequest:   React.PropTypes.func.isRequired
 }
 
 SignUpPage.defaultProps  = {
-  signUpRequest: ( ) => { }
+  signUpRequest:   ( ) => { }
 }
 
 const mapStateToProps    = (state) => state

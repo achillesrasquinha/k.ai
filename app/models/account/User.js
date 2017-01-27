@@ -30,9 +30,24 @@ User.createUser    = (user, callback) => {
 	})
 }
 
-User.getUserByEmail  = (user, callback) => {
-	const query      = { email: user.email }
+User.getUserByEmail  = (email, callback) => {
+	const query        = { email: email }
 	User.findOne(query, callback)
+}
+
+User.getUserByID     = (id, callback) => {
+	User.findById(id, callback)
+}
+
+
+User.matchPassword   = (password, passwordHash, callback) => {
+	bcrypt.compare(password, passwordHash, (err, res) => {
+		if ( err ) {
+			throw err
+		} else {
+			callback(null, res)
+		}
+	})
 }
 
 export default User

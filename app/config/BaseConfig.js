@@ -12,8 +12,8 @@ BaseConfig.URL.SIGNIN           = path.join(BaseConfig.URL.BASE, 'SignIn')
 BaseConfig.URL.SIGNUP           = path.join(BaseConfig.URL.BASE, 'SignUp')
 BaseConfig.URL.SEPERATOR        = '/'
 BaseConfig.URL.API              = {
-	'register_user': path.join(BaseConfig.URL.BASE, 'api', 'registerUser'),
-	'login_user':    path.join(BaseConfig.URL.BASE, 'api', 'loginUser')
+	'signup_user': path.join(BaseConfig.URL.BASE, 'api', 'SignUpUser'),
+	'signin_user': path.join(BaseConfig.URL.BASE, 'api', 'SignInUser')
 }
 
 BaseConfig.URI                  = { }
@@ -31,7 +31,9 @@ BaseConfig.App.Status           = {
 	VALIDATION_ERROR:        { message: 'Error during validation' },
 	REGISTRATION_SUCCESS:    { message: 'Successfully registered' },
 	REGISTRATION_FAILURE:    { message: 'Unsucessful registration' },
-	INTERNAL_SERVER_ERROR:   { message: 'Internal Server Error' }
+	INTERNAL_SERVER_ERROR:   { message: 'Internal Server Error' },
+	SIGNIN_SUCESS:           { message: 'Sucessfully signed in' },
+	SIGNIN_FAILURE:          { message: 'Unsucessful sign in' }
 }
 
 BaseConfig.App.Error            = {
@@ -41,7 +43,8 @@ BaseConfig.App.Error            = {
 	INVALID_GENDER:          { message: 'Invalid gender' },
 	INVALID_DATE_FORMAT:     { message: 'Invalid date format' },
 	INVALID_COUNTRY_CODE:    { message: 'Invalid country code' },
-	EMAIL_ADDRESS_EXISTS:    { message: 'Email address already exists' }
+	EMAIL_ADDRESS_EXISTS:    { message: 'Email address already exists' },
+	USER_DOES_NOT_EXISTS:    { message: 'User does not exists' }
 }
 
 export default BaseConfig

@@ -12,7 +12,7 @@ import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import WebpackConfig from './../../webpack.config'
-import { registerUserRouter } from './Routers'
+import { signUpUserRouter, signInUserRouter } from './Routers'
 import Logger from './../utils/Logger'
 
 const app         = express()
@@ -38,7 +38,8 @@ app.use(express.static(ServerConfig.Path.PUBLIC))
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-app.use(ServerConfig.URL.API['register_user'], registerUserRouter)
+app.use(ServerConfig.URL.API['signup_user'], signUpUserRouter)
+app.use(ServerConfig.URL.API['signin_user'], signInUserRouter)
 
 app.set('view engine', 'pug')
 app.set('views', ServerConfig.Path.TEMPLATES)

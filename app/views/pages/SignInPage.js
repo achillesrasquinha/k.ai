@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import ClientConfig from './../../config/ClientConfig'
 import SignInForm from './../components/account/SignInForm'
 import SocialLoginForm from './../components/account/SocialLoginForm'
-import { signInRequest } from './../../../app/client/actions/SignInActions'
+import { signInRequest } from './../../client/actions/SignInActions'
 
 class SignInPage extends React.Component {
   render() {
