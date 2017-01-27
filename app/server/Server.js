@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser'
 import SocketIO from 'socket.io'
 import mongodb from 'mongodb'
 import mongoose from 'mongoose'
+import apiai from 'apiai'
+import _ from 'lodash'
 
 import ServerConfig from './../config/ServerConfig'
 import webpack from 'webpack'
@@ -37,6 +39,11 @@ app.use(webpackHotMiddleware(compiler))
 app.use(express.static(ServerConfig.Path.PUBLIC))
 app.use(bodyParser.json())
 app.use(cookieParser())
+app.use(session({
+  secret: ServerConfig.SESSION_SECRET,
+  saveUninitialized: true,
+  resave: true
+}))
 
 app.use(ServerConfig.URL.API['signup_user'], signUpUserRouter)
 app.use(ServerConfig.URL.API['signin_user'], signInUserRouter)
@@ -60,15 +67,38 @@ server.listen(ServerConfig.PORT, (err) => {
 })
 
 io.sockets.on('connection', (socket) => {
-  Logger.info('A connection has occured')
-
   connections.push(socket)
 
+  Logger.info('A connection has occured')
+  Logger.info('Connections: ' + connections.length)
+
   socket.on('disconnect', (socket) => {
+    _.remove(connections, socket)
+
     Logger.info('A user has disconnected')
+    Logger.info('Connections: ' + connections.length)
   })
 
   socket.on('client message', (message) => {
     Logger.info('Recieved message: ' + JSON.stringify(message))
+
+    const sessionID = socket.id
+
+    Logger.info('Session ID: ' + sessionID)
+
+    const appai     = apiai(ServerConfig.APIAI_CLIENT_ACCESS_TOKEN)
+    const request   = appai.textRequest(message.content, {
+      sessionId: sessionID
+    })
+
+    request.on('response', (response) => {
+      Logger.info('Recieved response from api.ai: ' + JSON.stringify(response))
+    })
+
+    request.on('error'   , (error) => {
+      Logger.info('Recieved error from api.ai: ' + JSON.stringify(error))
+    })
+
+    request.end()
   })
 })

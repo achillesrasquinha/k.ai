@@ -14,8 +14,11 @@ ServerConfig.PORT           = process.env.PORT || 4000
 ServerConfig.DBNAME         = 'kai'
 
 ServerConfig.JWT_SECRET     = 'SECRET'
+ServerConfig.SESSION_SECRET = 'SECRET'
 
 ServerConfig.URI            = { }
 ServerConfig.URI.MONGODB    = 'mongodb://' + ServerConfig.HOST + '/' + ServerConfig.DBNAME
+
+ServerConfig.APIAI_CLIENT_ACCESS_TOKEN = '726da2be672f4bbbab5a3e180df90d2c'
 
 export default ServerConfig

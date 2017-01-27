@@ -1,5 +1,15 @@
+import { POPULATE_MESSAGES } from './../actions/ActionTypes'
+
 const defaultState    = { messages: [ ] }
 
-const MessagesReducer = (state = defaultState, action = { }) => state
+const messages        = (state = defaultState, action = { }) => {
+  switch (action.type) {
+    case POPULATE_MESSAGES:
+      return [...state, ...action.messages]
 
-export default MessagesReducer
+    default:
+      return state
+  }
+}
+
+export default messages

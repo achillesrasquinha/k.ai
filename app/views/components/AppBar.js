@@ -2,10 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import classnames from 'classnames'
 
-import {connect} from 'react-redux'
-
 import ClientConfig from './../../config/ClientConfig'
-import { signOut } from './../../client/actions/SignInActions'
 
 class AppBar extends React.Component {
   constructor() {
@@ -19,7 +16,7 @@ class AppBar extends React.Component {
       event.preventDefault()
     }
 
-    this.props.signOut()
+    this.props.onSignOut()
   }
 
   render() {
@@ -68,10 +65,4 @@ AppBar.defaultProps   = {
   fixed:     false
 }
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.UserReducer.user
-  }
-}
-
-export default connect(mapStateToProps, { signOut })(AppBar)
+export default AppBar

@@ -36,7 +36,7 @@ class App extends React.Component {
             <div className="row">
               <div className="col-md-3"></div>
               <div className="col-md-6">
-                <ChatPanel messages={this.state.messages}/>
+                <ChatPanel populateMessages={this.props.getMessages} messages={this.state.messages}/>
               </div>
               <div className="col-md-3"></div>
             </div>

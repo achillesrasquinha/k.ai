@@ -12,8 +12,9 @@ BaseConfig.URL.SIGNIN           = path.join(BaseConfig.URL.BASE, 'SignIn')
 BaseConfig.URL.SIGNUP           = path.join(BaseConfig.URL.BASE, 'SignUp')
 BaseConfig.URL.SEPERATOR        = '/'
 BaseConfig.URL.API              = {
-	'signup_user': path.join(BaseConfig.URL.BASE, 'api', 'SignUpUser'),
-	'signin_user': path.join(BaseConfig.URL.BASE, 'api', 'SignInUser')
+	'signup_user':     path.join(BaseConfig.URL.BASE, 'api', 'SignUpUser'),
+	'signin_user':     path.join(BaseConfig.URL.BASE, 'api', 'SignInUser'),
+	'message_history': path.join(BaseConfig.URL.BASE, 'api', 'GetMessages')
 }
 
 BaseConfig.URI                  = { }

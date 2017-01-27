@@ -3,9 +3,12 @@ import React from 'react'
 import ChatBubble from './ChatBubble'
 
 class ChatPanel extends React.Component {
-  constructor() {
-    super()
-  }
+  // componentDidMount() {
+  //   this.props.populateMessages()
+  //             .then((messages) => {
+  //
+  //             })
+  // }
 
   render() {
     return (
@@ -19,5 +22,13 @@ class ChatPanel extends React.Component {
     )
   }
 }
+
+// ChatPanel.propTypes     = {
+//   populateMessages: React.PropTypes.func.isRequired
+// }
+//
+// ChatPanel.defaultProps  = {
+//   populateMessages: ( ) => { }
+// }
 
 export default ChatPanel
