@@ -5,6 +5,7 @@ import io from 'socket.io-client'
 import AppBar from './../views/components/AppBar'
 import ChatPanel from './../views/components/chat/ChatPanel'
 import ChatForm from './../views/components/chat/ChatForm'
+// import { signOut } from './actions/SignInActions'
 
 class App extends React.Component {
   constructor() {
@@ -18,7 +19,6 @@ class App extends React.Component {
 
   onSubmit(message) {
     this.socket.emit('client message', message)
-
 
     const messages = [...this.state.messages, message]
     this.setState({ messages })
@@ -45,10 +45,20 @@ class App extends React.Component {
   }
 }
 
+// App.propTypes    = {
+//   user:    React.PropTypes.object.isRequired,
+//   signOut: React.PropTypes.func.isRequired
+// }
+//
+// App.defaultProps = {
+//   user:     { },
+//   signOut:  ( ) => { }
+// }
+
 App.defaultStates     = {
   messages: [ ]
 }
 
-const mapStateToProps = (state) => state
+// const mapStateToProps = (state) => state
 
-export default connect(mapStateToProps)(App)
+export default App

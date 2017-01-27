@@ -1,10 +1,36 @@
 import React from 'react'
+import _ from 'lodash'
 import classnames from 'classnames'
 
+import {connect} from 'react-redux'
+
 import ClientConfig from './../../config/ClientConfig'
+import { signOut } from './../../client/actions/SignInActions'
 
 class AppBar extends React.Component {
+  constructor() {
+    super()
+
+    this.onSignOut = this.onSignOut.bind(this)
+  }
+
+  onSignOut(event) {
+    if ( !event.isDefaultPrevented() ) {
+      event.preventDefault()
+    }
+
+    this.props.signOut()
+  }
+
   render() {
+    const userLinks  = (
+      <a href="#" onClick={this.onSignOut}>Sign Out</a>
+    )
+
+    const guestLinks = (
+      <a href={ClientConfig.URL.SIGNIN}>Sign In</a>
+    )
+
     return (
       <div className="appBar">
         <div className={classnames("navbar navbar-default no-border-radius", { "navbar-fixed-top": this.props.fixed })}>
@@ -20,7 +46,7 @@ class AppBar extends React.Component {
             <div id="appBar-collapse" className="appBar-collapse collapse navbar-collapse font-bold text-uppercase">
               <ul className="nav navbar-nav navbar-right">
                 <li>
-                  <a href={ClientConfig.URL.SIGNIN}>Sign In</a>
+                  {!_.isEmpty(this.props.user) ? userLinks : guestLinks}
                 </li>
               </ul>
             </div>
@@ -31,8 +57,21 @@ class AppBar extends React.Component {
   }
 }
 
-AppBar.defaultProps = {
-  fixed: false
+AppBar.propTypes      = {
+  user:      React.PropTypes.object.isRequired,
+  onSignOut: React.PropTypes.func.isRequired
 }
 
-export default AppBar
+AppBar.defaultProps   = {
+  user:      { },
+  onSignOut: ( ) => { },
+  fixed:     false
+}
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.UserReducer.user
+  }
+}
+
+export default connect(mapStateToProps, { signOut })(AppBar)
