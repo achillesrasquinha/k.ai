@@ -1,5 +1,6 @@
 import path from 'path'
 import url from 'url'
+import uuid from 'uuid'
 
 import BaseConfig from './BaseConfig'
 
@@ -11,6 +12,8 @@ ServerConfig.Path.TEMPLATES = path.join(ServerConfig.Path.VIEWS, 'templates')
 ServerConfig.HOST           = 'localhost'
 ServerConfig.PORT           = process.env.PORT || 4000
 ServerConfig.DBNAME         = 'kai'
+
+ServerConfig.JWT_SECRET     = 'SECRET'
 
 ServerConfig.URI            = { }
 ServerConfig.URI.MONGODB    = 'mongodb://' + ServerConfig.HOST + '/' + ServerConfig.DBNAME

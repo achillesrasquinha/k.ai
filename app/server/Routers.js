@@ -5,6 +5,7 @@ import ServerConfig from './../config/ServerConfig'
 import { validateUser } from './../utils/Validators'
 import User from './../models/account/User'
 import Logger from './../utils/Logger'
+import { createUserToken } from './Authentication.js'
 
 const signUpUserRouter = express.Router()
 const signInUserRouter = express.Router()
@@ -30,7 +31,7 @@ signUpUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 					const userObj = new User({
 						firstname:   user.firstname,
 						lastname:    user.lastname,
-						email: 		 user.email,
+						email: 		   user.email,
 						password:    user.password,
 						sexCode:     user.sexCode,
 						countryCode: user.countryCode,
@@ -80,7 +81,13 @@ signInUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 						} else {
 							if ( match ) {
 								Logger.info('Password matches')
-								res.status(200).json({ status: ServerConfig.App.Status.SIGNIN_SUCCESS })
+								const token = createUserToken(user)
+								Logger.info('Created token for authentication: ' + JSON.stringify(token))
+
+								res.status(200).json({
+									status: ServerConfig.App.Status.SIGNIN_SUCCESS,
+									 token: token
+								})
 							} else {
 								Logger.info('Password does not match')
 								response.status          = ServerConfig.App.Status.SIGNIN_FAILURE
