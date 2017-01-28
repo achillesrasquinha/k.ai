@@ -71,7 +71,7 @@ class SignUpForm extends React.Component {
                  .then(( )   => {
                           this.context.router.push(ClientConfig.URL.BASE)
                         },
-                       (err) => { this.setState({ errors: err.response.data.errors, isLoading: false }) })
+                       (err) => { console.log(JSON.stringify(err)); this.setState({ errors: err.response.data.errors, isLoading: false }) })
     }
   }
 

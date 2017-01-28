@@ -16,9 +16,7 @@ import Reducers from './Reducers'
 const appContainer = document.getElementById(ClientConfig.App.ID)
 const reduxLogger  = logger()
 const middleware   = applyMiddleware(thunk, reduxLogger)
-const store        = createStore(Reducers, compose(middleware,
-  window.devToolsExtension ? window.devToolsExtension() : ( ) => { }
-))
+const store        = createStore(Reducers, middleware)
 
 if ( localStorage.jwt ) {
   const token   = localStorage.jwt

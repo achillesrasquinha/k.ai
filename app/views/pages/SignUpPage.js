@@ -32,11 +32,11 @@ class SignUpPage extends React.Component {
 }
 
 SignUpPage.propTypes     = {
-  signUpRequest:   React.PropTypes.func.isRequired
+  signUpRequest: React.PropTypes.func.isRequired
 }
 
 SignUpPage.defaultProps  = {
-  signUpRequest:   ( ) => { }
+  signUpRequest: ( ) => { }
 }
 
 const mapStateToProps    = (state) => state

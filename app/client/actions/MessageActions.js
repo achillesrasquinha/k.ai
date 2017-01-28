@@ -1,8 +1,16 @@
 import axios from 'axios'
 
 import ClientConfig from './../../config/ClientConfig'
+import { LOAD_MESSAGE } from './ActionTypes'
 
-const getMessages = (limit = 100) => {
+const loadMessage     = (message) => {
+	return {
+		type: LOAD_MESSAGE,
+		message: message
+	}
+}
+
+const getMessages     = (limit = 100) => {
 	return dispatch => {
     return axios.post(ClientConfig.URL.API['message_history'], limit)
                 .then((res) => {
@@ -11,7 +19,7 @@ const getMessages = (limit = 100) => {
 	}
 }
 
-const sendMessage = (message) => {
+const sendMessage     = (message) => {
 	return dispatch => {
 		return axios.post(ClientConfig.URL.API['send_message'], message)
 								.then((res) => {
@@ -20,4 +28,4 @@ const sendMessage = (message) => {
 	}
 }
 
-export { getMessages, sendMessage }
+export { loadMessage, getMessages, sendMessage }

@@ -14,6 +14,7 @@ import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import WebpackConfig from './../../webpack.config'
+import Message from './../meta/chat/Message'
 import { signUpUserRouter, signInUserRouter } from './Routers'
 import Logger from './../utils/Logger'
 
@@ -79,7 +80,7 @@ io.sockets.on('connection', (socket) => {
     Logger.info('Connections: ' + connections.length)
   })
 
-  socket.on('client message', (message) => {
+  socket.on('chat message', (message) => {
     Logger.info('Recieved message: ' + JSON.stringify(message))
 
     const sessionID = socket.id
@@ -93,6 +94,11 @@ io.sockets.on('connection', (socket) => {
 
     request.on('response', (response) => {
       Logger.info('Recieved response from api.ai: ' + JSON.stringify(response))
+
+      const content = response.result.fulfillment.speech
+      const message = new Message('k.ai', content)
+
+      socket.emit('chat message', message)
     })
 
     request.on('error'   , (error) => {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Message from './../../../models/chat/Message'
+import Message from './../../../meta/chat/Message'
 
 class ChatForm extends React.Component {
   constructor() {
@@ -24,7 +24,7 @@ class ChatForm extends React.Component {
     }
 
     if ($.trim(this.state.content).length > 0) {
-      const message = new Message(this.state.content)
+      const message = new Message(this.props.user.firstname, this.state.content)
 
       this.props.onSubmit(message)
 
@@ -62,11 +62,13 @@ ChatForm.defaultStates = {
 }
 
 ChatForm.propTypes     = {
+  user:     React.PropTypes.object.isRequired,
   onSubmit: React.PropTypes.func.isRequired
 }
 
 ChatForm.defaultProps  = {
-  onSubmit: () => { }
+  user:     { },
+  onSubmit: ( ) => { }
 }
 
 export default ChatForm

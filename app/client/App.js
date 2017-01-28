@@ -18,8 +18,16 @@ class App extends React.Component {
     this.state    = App.defaultStates
   }
 
+  componentDidMount() {
+    this.socket.on('chat message', (message) => {
+      const messages = [...this.state.messages, message]
+
+      this.setState({ messages })
+    })
+  }
+
   onSubmit(message) {
-    this.socket.emit('client message', message)
+    this.socket.emit('chat message', message)
 
     // this.props.sendMessage(message)
 
@@ -42,7 +50,7 @@ class App extends React.Component {
             </div>
           </div>
         </div>
-        <ChatForm onSubmit={this.onSubmit}/>
+        <ChatForm user={this.props.user} onSubmit={this.onSubmit}/>
       </div>
     )
   }
