@@ -19,6 +19,10 @@ ServerConfig.SESSION_SECRET = 'SECRET'
 ServerConfig.URI            = { }
 ServerConfig.URI.MONGODB    = 'mongodb://' + ServerConfig.HOST + '/' + ServerConfig.DBNAME
 
-ServerConfig.APIAI_CLIENT_ACCESS_TOKEN = '726da2be672f4bbbab5a3e180df90d2c'
+
+ServerConfig.kai                           = { }
+ServerConfig.kai.WATERFALL_COMPLETE        = 'waterfall-complete'
+ServerConfig.kai.APIAI_CLIENT_ACCESS_TOKEN = '061f82eb5d3d4ceeb0943bed5eafb2e3'
+ServerConfig.kai.URL_YAHOO_FINANCE         = 'https://in.finance.yahoo.com/'
 
 export default ServerConfig

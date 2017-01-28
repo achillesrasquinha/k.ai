@@ -15,7 +15,7 @@ class ChatPanel extends React.Component {
       <div className="chatPanel">
         <div className="panel panel-default no-border no-shadow no-background no-margin no-padding">
           <div className="panel-body no-padding">
-            {this.props.messages.map(({id, from, content, datetime}) => <ChatBubble key={id} username={from} content={content} datetime={datetime}/>)}
+            {this.props.messages.map((message) => <ChatBubble key={message.id} message={message}/>)}
           </div>
         </div>
       </div>

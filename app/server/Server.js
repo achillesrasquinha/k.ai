@@ -4,6 +4,7 @@ import http from 'http'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import SocketIO from 'socket.io'
+import axios from 'axios'
 import mongodb from 'mongodb'
 import mongoose from 'mongoose'
 import apiai from 'apiai'
@@ -87,7 +88,7 @@ io.sockets.on('connection', (socket) => {
 
     Logger.info('Session ID: ' + sessionID)
 
-    const appai     = apiai(ServerConfig.APIAI_CLIENT_ACCESS_TOKEN)
+    const appai     = apiai(ServerConfig.kai.APIAI_CLIENT_ACCESS_TOKEN)
     const request   = appai.textRequest(message.content, {
       sessionId: sessionID
     })
@@ -96,9 +97,15 @@ io.sockets.on('connection', (socket) => {
       Logger.info('Recieved response from api.ai: ' + JSON.stringify(response))
 
       const content = response.result.fulfillment.speech
-      const message = new Message('k.ai', content)
 
-      socket.emit('chat message', message)
+      if ( content == ServerConfig.kai.WATERFALL_COMPLETE ) {
+        Logger.info('Recieved all k.ai parameters')
+
+        
+      } else {
+        const message = new Message('k.ai', content)
+        socket.emit('chat message', message)
+      }
     })
 
     request.on('error'   , (error) => {

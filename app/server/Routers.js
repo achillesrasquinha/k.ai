@@ -18,16 +18,17 @@ signUpUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 	let   response  = validateUser(user)
 
 	if ( _.isEqual(response.status, ServerConfig.App.Status.VALIDATION_SUCCESS) ) {
-		User.getUserByEmail(user.email, (err, user) => {
+		User.getUserByEmail(user.email, (err, u) => {
 			if ( err ) {
 				throw err
 				res.status(500).json({ status: ServerConfig.App.Status.REGISTRATION_FAILURE })
 			} else {
-				if ( user ) {
+				if ( u ) {
 					response.status       = ServerConfig.App.Status.VALIDATION_ERROR
 					response.errors.email = ServerConfig.App.Error.EMAIL_ADDRESS_EXISTS
 					res.status(400).json(response)
 				} else {
+					Logger.info('Creating user: ' + JSON.stringify(user))
 					const userObj = new User({
 						firstname:   user.firstname,
 						lastname:    user.lastname,
@@ -35,7 +36,7 @@ signUpUserRouter.post(ServerConfig.URL.SEPERATOR, (req, res) => {
 						password:    user.password,
 						sexCode:     user.sexCode,
 						countryCode: user.countryCode,
-						birthDate:   user.birthDate,
+						birthDate:   user.birthDate
 					})
 
 					User.createUser(userObj, (err) => {

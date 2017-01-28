@@ -3,9 +3,10 @@ import moment from 'moment'
 
 class ChatBubble extends React.Component {
   render() {
-    const username = this.props.username
-    const content  = this.props.content
-    const time     = moment(this.props.datetime).local().format('hh:mm a')
+    const message  = this.props.message
+    const username = message.from
+    const content  = message.content
+    const time     = moment(message.datetime).local().format('hh:mm a')
 
     return (
       <div className="chatBubble">

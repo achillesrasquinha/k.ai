@@ -69,9 +69,9 @@ class SignUpForm extends React.Component {
 
        this.props.onSubmit(this.state)
                  .then(( )   => {
-                          this.context.router.push(ClientConfig.URL.BASE)
+                          this.context.router.push(ClientConfig.URL.SIGNIN)
                         },
-                       (err) => { console.log(JSON.stringify(err)); this.setState({ errors: err.response.data.errors, isLoading: false }) })
+                       (res) => { this.setState({ errors: res.data, isLoading: false }) })
     }
   }
 
