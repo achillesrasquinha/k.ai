@@ -100,8 +100,6 @@ io.sockets.on('connection', (socket) => {
 
       if ( content == ServerConfig.kai.WATERFALL_COMPLETE ) {
         Logger.info('Recieved all k.ai parameters')
-
-        
       } else {
         const message = new Message('k.ai', content)
         socket.emit('chat message', message)
