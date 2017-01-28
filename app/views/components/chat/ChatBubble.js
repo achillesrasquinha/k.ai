@@ -40,7 +40,7 @@ class ChatBubble extends React.Component {
             <div className="col-xs-6">
               <div className="pull-right">
                 <div className="chatBubble-status">
-                  <i className="fa fa-fw fa-spinner"></i>
+                  {/*<i className="fa fa-fw fa-spinner"></i>*/}
                 </div>
               </div>
             </div>

@@ -1,15 +1,21 @@
 class Stock {
   constructor(symbol, meta) {
     this.symbol   = symbol
+    this.last     = meta.last
     this.change   = meta.change
 
     this.stock    = {
       symbol: this.symbol,
+      last: {
+        value: this.last.value,
+        datetime: this.last.datetime
+      },
       change: {
         value: this.change.value,
         percent: this.change.percent,
         type: this.change.type
-      }
+      },
+
     }
 
     return this.stock
@@ -21,7 +27,14 @@ class Stock {
         `<tr>`                        +
           `<td>`                      +
             `${stock.symbol}`         +
+          `</td>`                     +
           `<td>`                      +
+            `${stock.last.value}`     +
+            `<br/>`                   +
+            `<small>`                 +
+            `${stock.last.datetime}`  +
+            `</small>`                +
+          `</td>`                     +
           `<td>`                      +
             `<span class="${
               stock.change.type == Stock.Type.GAIN ? "text-success" : "text-danger"
@@ -42,12 +55,15 @@ class Stock {
     })
 
     const htmlString =
-        `<table class="table table-condensed"` +
+        `<table class="table table-condensed"`  +
           `<thead>`                             +
             `<tr>`                              +
               `<td>`                            +
                 `Symbol`                        +
+              `</td>`                           +
               `<td>`                            +
+                `Last Trade`                    +
+              `</td>`                           +
               `<td>`                            +
                 `Change Value`                  +
               `</td>`                           +
@@ -66,7 +82,7 @@ class Stock {
 }
 
 Stock.Type      = { }
-Stock.Type.GAIN = 'GAIN'
-Stock.Type.LOSS = 'LOSS'
+Stock.Type.GAIN = 'gain'
+Stock.Type.LOSS = 'loss'
 
 export default Stock
