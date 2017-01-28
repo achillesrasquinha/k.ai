@@ -4,7 +4,8 @@ import http from 'http'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import SocketIO from 'socket.io'
-import axios from 'axios'
+import Request from 'request'
+import cheerio from 'cheerio'
 import mongodb from 'mongodb'
 import mongoose from 'mongoose'
 import apiai from 'apiai'
@@ -16,6 +17,7 @@ import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import WebpackConfig from './../../webpack.config'
 import Message from './../meta/chat/Message'
+import Stock from './../meta/stock/Stock'
 import { signUpUserRouter, signInUserRouter } from './Routers'
 import Logger from './../utils/Logger'
 
@@ -100,8 +102,36 @@ io.sockets.on('connection', (socket) => {
 
       if ( content == ServerConfig.kai.WATERFALL_COMPLETE ) {
         Logger.info('Recieved all k.ai parameters')
+
+        Request({ url: ServerConfig.kai.URL_YAHOO_FINANCE + '/gainers?e=ns' }, (err, response, body) => {
+          let $         = cheerio.load(body)
+          const stocks  = [ ]
+
+          $('#yfitp tbody tr').each((i, element) => {
+            let   symbol  = $('.first b a', element).text().replace('.NS', '')
+            const value   = $('td span')//15.1
+            const percent = //10.4
+
+            const meta   = {
+              change: {
+                value: value,
+                percent: percent,
+                type: Stock.Type.GAIN
+              }
+            }
+            const stock  = new Stock(symbol, meta)
+
+            stocks.push(stock)
+          })
+          const htmlString = Stock.toHTMLString(stocks.splice(0, ServerConfig.kai.MAX_STOCK_RESULTS))
+          Logger.info(htmlString)
+          const _content = 'Here is a list of top ' + ServerConfig.kai.MAX_STOCK_RESULTS + ' stocks.' + htmlString
+          const message  = new Message(ServerConfig.kai.NAME, _content)
+
+          socket.emit('chat message', message)
+        })
       } else {
-        const message = new Message('k.ai', content)
+        const message = new Message(ServerConfig.kai.NAME, content)
         socket.emit('chat message', message)
       }
     })

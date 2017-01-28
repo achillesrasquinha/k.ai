@@ -21,8 +21,10 @@ ServerConfig.URI.MONGODB    = 'mongodb://' + ServerConfig.HOST + '/' + ServerCon
 
 
 ServerConfig.kai                           = { }
+ServerConfig.kai.NAME                      = 'k.ai'
 ServerConfig.kai.WATERFALL_COMPLETE        = 'waterfall-complete'
 ServerConfig.kai.APIAI_CLIENT_ACCESS_TOKEN = '061f82eb5d3d4ceeb0943bed5eafb2e3'
 ServerConfig.kai.URL_YAHOO_FINANCE         = 'https://in.finance.yahoo.com/'
+ServerConfig.kai.MAX_STOCK_RESULTS         = 5
 
 export default ServerConfig

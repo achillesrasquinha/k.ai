@@ -2,6 +2,18 @@ import React from 'react'
 import moment from 'moment'
 
 class ChatBubble extends React.Component {
+  constructor() {
+    super()
+
+    this.createHTML = this.createHTML.bind(this)
+  }
+
+  createHTML(string) {
+    return {
+      __html: string
+    }
+  }
+
   render() {
     const message  = this.props.message
     const username = message.from
@@ -10,12 +22,12 @@ class ChatBubble extends React.Component {
 
     return (
       <div className="chatBubble">
-        <div className="alert alert-success">
+        <div className="well well-sm">
           <div className="chatBubble-username">
             <h4 className="font-bold">{username}</h4>
           </div>
           <div className="chatBubble-content">
-            {content}
+            <div dangerouslySetInnerHTML={ this.createHTML(content) }/>
           </div>
           <div className="row">
             <div className="col-xs-6">
