@@ -10,25 +10,25 @@ import mongodb from 'mongodb'
 import mongoose from 'mongoose'
 import apiai from 'apiai'
 import _ from 'lodash'
+import jwt from 'jsonwebtoken'
+import GoogleFinance from 'google-finance'
+import HJSON from 'hjson'
 
 import ServerConfig from './../config/ServerConfig'
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import WebpackConfig from './../../webpack.config'
+import User from './../models/account/User'
 import Message from './../meta/chat/Message'
 import Stock from './../meta/stock/Stock'
+import TradeOrder from './../meta/stock/TradeOrder'
 import { signUpUserRouter, signInUserRouter } from './Routers'
 import Logger from './../utils/Logger'
 
 const app         = express()
 const server      = new http.Server(app)
 const io          = SocketIO(server)
-
-mongoose.Promise  = global.Promise
-mongoose.connect(ServerConfig.URI.MONGODB)
-
-const db          = mongoose.connection
 
 const compiler    = webpack(WebpackConfig)
 
@@ -87,8 +87,15 @@ io.sockets.on('connection', (socket) => {
     Logger.info('Recieved message: ' + JSON.stringify(message))
 
     const sessionID = socket.id
+    const token     = message.token
+    let   user      = { }
+
+    if ( token ) {
+      user = jwt.decode(token)
+    }
 
     Logger.info('Session ID: ' + sessionID)
+    Logger.info('Currently user ' + JSON.stringify(user) + ' is in session')
 
     const appai     = apiai(ServerConfig.kai.APIAI_CLIENT_ACCESS_TOKEN)
     const request   = appai.textRequest(message.content, {
@@ -99,12 +106,13 @@ io.sockets.on('connection', (socket) => {
       Logger.info('Recieved response from api.ai: ' + JSON.stringify(response))
 
       const content = response.result.fulfillment.speech
-      const intent  = response.metadata.intentName
+      const intent  = response.result.metadata.intentName
 
       if ( content == ServerConfig.kai.WATERFALL_COMPLETE ) {
         Logger.info('Recieved all k.ai parameters')
 
         if ( intent == ServerConfig.kai.STOCK_RECOMMENDATION ) {
+          Logger.info('Stock recommendation intent recieved')
           const type  = response.result.parameters['stock-status']
           const path  = type == Stock.Type.GAIN ? '/gainers?e=ns' : '/losers?e=ns'
 
@@ -151,12 +159,64 @@ io.sockets.on('connection', (socket) => {
             const message  = new Message(ServerConfig.kai.NAME, _content)
 
             socket.emit('chat message', message)
-          } else if ( intent == ServerConfig.kai.STOCK_TRADE ) {
-            const stockID    = response.result.parameters['stock-id']
-            const tradeType  = response.result.parameters['stock-trade']
-            const stockUnits = response.result.parameters['stock-units'].units
-          }
-        })
+          })
+        } else if ( intent == ServerConfig.kai.STOCK_TRADE ) {
+          const stockID     = response.result.parameters['stock-id']
+          const tradeType   = response.result.parameters['stock-trade']
+          const stockUnits  = response.result.parameters['stock-units'].units
+          Request.get({ url:'http://finance.google.com/finance/info?client=ig&q=NSE:' + stockID}, (err, response, body) => {
+            Logger.info('response from google finance: ' + body)
+
+            let hack     = body.replace('//', '')
+                hack     = body.replace('[',  '')
+                hack     = body.replace(']',  '')
+            const result = JSON.stringify(eval('(' + hack + ')'))
+
+            if ( err ) {
+              throw err
+              // you may have to respond the user
+            } else {
+              Logger.info('JSON result: ' + result)
+              const tradePrice = parseFloat(result.l_fix)
+              Logger.info('trading price: ' + tradePrice)
+              const tradeOrder = new TradeOrder(stockID, tradeType, stockUnits, tradePrice)
+
+              Logger.info("User's query is " + JSON.stringify(tradeOrder))
+
+              User.getUserByID(user.id, function (err, u) {
+                if ( err ) {
+                  throw err
+                } else {
+                  Logger.info('Recieved user: ' + JSON.stringify(u))
+                  Logger.info('Stock Profile recieved: ' + JSON.stringify(u.portfolio))
+
+                  if ( _.isEmpty(u.portfolio.stocks) ) {
+                    Logger.info('User has no current stocks traded')
+
+                    if ( tradeOrder.type == TradeOrder.Type.SELL ) {
+                      const content = 'Sorry, you have no stocks to sell.'
+                      const message = new Message(ServerConfig.kai.NAME, content)
+                      socket.emit('chat message', message)
+                    } else {
+                      const content = TradeOrder.toHTMLString(tradeOrder)
+                      const message = new Message(ServerConfig.kai.NAME, content)
+                      socket.emit('chat message', message)
+
+                      User.updatePortfolio(u, tradeOrder, (err, u) => {})
+                    }
+                  } else {
+                    Logger.info('User has some stocks')
+                    User.updatePortfolio(u, tradeOrder, (err, u) => {})
+                    const content = TradeOrder.toHTMLString(tradeOrder)
+                    const message = new Message(ServerConfig.kai.NAME, content)
+                    socket.emit('chat message', message)
+                  }
+                }
+              })
+            }
+
+          })
+        }
       } else {
         const message = new Message(ServerConfig.kai.NAME, content)
         socket.emit('chat message', message)

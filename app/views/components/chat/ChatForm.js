@@ -24,7 +24,7 @@ class ChatForm extends React.Component {
     }
 
     if ($.trim(this.state.content).length > 0) {
-      const message = new Message(this.props.user.firstname, this.state.content)
+      const message = new Message(this.props.user.firstname, this.state.content, localStorage.jwt)
 
       this.props.onSubmit(message)
 
