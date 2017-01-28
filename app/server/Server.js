@@ -109,8 +109,8 @@ io.sockets.on('connection', (socket) => {
 
           $('#yfitp tbody tr').each((i, element) => {
             let   symbol  = $('.first b a', element).text().replace('.NS', '')
-            const value   = $('td span')//15.1
-            const percent = //10.4
+            const value   = 15.1
+            const percent = 10.4
 
             const meta   = {
               change: {
