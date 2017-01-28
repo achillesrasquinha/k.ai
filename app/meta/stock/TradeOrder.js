@@ -1,13 +1,15 @@
 class TradeOrder {
-  constructor(stockID, type, units) {
-    this.stockID = stockID
-    this.type    = type
-    this.units   = units
+  constructor(stockID, type, units, tradePrice) {
+    this.stockID    = stockID
+    this.type       = type
+    this.units      = units
+    this.tradePrice = tradePrice
 
-    this.order     = {
-      stockID: this.stockID,
-      type:    this.type,
-      units:   this.units
+    this.order      = {
+      stockID:    this.stockID,
+      type:       this.type,
+      units:      this.units,
+      tradePrice: this.tradePrice
     }
 
     return this.order
@@ -42,7 +44,7 @@ class TradeOrder {
             }
             </h4>`                      +
             `<div>`                     +
-              `${tradeOrder.units}`     +
+              `${(tradeOrder.units * tradeOrder.tradePrice).toFixed(2)}` +
             `</div>`                    +
           `</div>`                      +
         `</div>`                        +

@@ -75,24 +75,6 @@ User.updatePortfolio  = (user, tradeOrder, callback) => {
 			u.markModified('portfolio')
 		}
 	})
-	// 		const query     = { 'email': u.email }
-	//
-	// 		User.update(query, { '$set': { 'portfolio.$': portfolio }})
-	// 	} else {
-	// 		Logger.info('User does not exists')
-	// 	}
-	// })
-
-	// only for debug
-	// User.findOne({ email: user.email }, (err, u) => {
-	// 	if ( err ) { throw err }
-	//
-	// 	if ( u ) {
-	// 		Logger.info('new portfolio: ' + JSON.stringify(u.portfolio))
-	// 	} else {
-	// 		Logger.info('user does not exists')
-	// 	}
-	// })
 }
 
 export default User

@@ -164,13 +164,13 @@ io.sockets.on('connection', (socket) => {
           const stockID     = response.result.parameters['stock-id']
           const tradeType   = response.result.parameters['stock-trade']
           const stockUnits  = response.result.parameters['stock-units'].units
+
           Request.get({ url:'http://finance.google.com/finance/info?client=ig&q=NSE:' + stockID}, (err, response, body) => {
             Logger.info('response from google finance: ' + body)
 
             let hack     = body.replace('//', '')
-                hack     = body.replace('[',  '')
-                hack     = body.replace(']',  '')
-            const result = JSON.stringify(eval('(' + hack + ')'))
+            let result   = JSON.stringify(eval('(' + hack + ')'))
+                result   = JSON.parse(result[0])
 
             if ( err ) {
               throw err
@@ -183,7 +183,7 @@ io.sockets.on('connection', (socket) => {
 
               Logger.info("User's query is " + JSON.stringify(tradeOrder))
 
-              User.getUserByID(user.id, function (err, u) {
+              User.getUserByID(user.id, (err, u) => {
                 if ( err ) {
                   throw err
                 } else {
@@ -215,6 +215,17 @@ io.sockets.on('connection', (socket) => {
               })
             }
 
+
+          })
+        } else if ( intent == ServerConfig.kai.PORTFOLIO_DESCRIPTION ) {
+
+          User.getUserByID(user.id, (err, u) => {
+            const portfolio = u.portfolio
+            Portfolio.toHTMLString(portfolio, (err, content) => {
+              const message = new Message(ServerConfig.kai.NAME, content)
+
+              socket.emit('chat messaage', messaage)
+            })
           })
         }
       } else {
