@@ -12,7 +12,7 @@ import apiai from 'apiai'
 import _ from 'lodash'
 import jwt from 'jsonwebtoken'
 import GoogleFinance from 'google-finance'
-import HJSON from 'hjson'
+import moment from 'moment'
 
 import ServerConfig from './../config/ServerConfig'
 import webpack from 'webpack'
@@ -182,9 +182,10 @@ io.sockets.on('connection', (socket) => {
               // you may have to respond the user
             } else {
               Logger.info('JSON result: ' + JSON.stringify(result))
-              const tradePrice = parseFloat(result.l_fix)
+              const tradePrice    = parseFloat(result.l_fix)
               Logger.info('trading price: ' + tradePrice)
-              const tradeOrder = new TradeOrder(stockID, tradeType, stockUnits, tradePrice)
+              const tradeDateTime = moment(result.lt_dts).format('YYYY MMM Do, hh:mm a')
+              const tradeOrder    = new TradeOrder(stockID, tradeType, stockUnits, tradePrice, tradeDateTime)
 
               Logger.info("User's query is " + JSON.stringify(tradeOrder))
 
@@ -237,8 +238,6 @@ io.sockets.on('connection', (socket) => {
               Logger.info('response from google finance: ' + body)
 
               let hack     = body.replace('//', '')
-                  hack     = hack.replace('[' , '')
-                  hack     = hack.replace(']' , '')
               let result   = JSON.stringify(eval('(' + hack + ')'))
                   result   = JSON.parse(result)
 
@@ -248,7 +247,7 @@ io.sockets.on('connection', (socket) => {
               } else {
                 Logger.info('JSON result: ' + JSON.stringify(result))
 
-                const content   = Portfolio.toHTMLString(u.portfolio, result)
+                const content   = Portfolio.toHTMLString(u, result)
                 const message   = new Message(ServerConfig.kai.NAME, content)
 
                 socket.emit('chat message', message)

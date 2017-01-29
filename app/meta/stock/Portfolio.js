@@ -14,37 +14,39 @@ class Portfolio {
     return this.portfolio
   }
 
-  static toHTMLString(portfolio, latestPrice) {
-    const rows       = portfolio.stocks.map((stock, i) => {
-
+  static toHTMLString(user, latestPrice) {
+    const rows       = user.portfolio.stocks.map((stock, i) => {
       Logger.info('stock.costPrice: ' + stock.costPrice)
+      Logger.info('latestPrice: ' + JSON.stringify(latestPrice))
       const row =
         `<tr>
-          <td>${stock.stockID}</td>
-          <td>${stock.units}</td>
-          <td>${parseFloat(stock.costPrice).toFixed(2)}</td>
-          <td>${latestPrice[i].l_fix}</td>
+          <td class="text-center">${stock.stockID}</td>
+          <td class="text-center">${stock.units}</td>
+          <td class="text-center">${parseFloat(stock.costPrice).toFixed(2)}</td>
+          <td class="text-center">${latestPrice[i].l_fix}</td>
         </tr>`
-
       return row
     }).join('')
 
     const htmlString =
-        `<div class="panel panel-sucess">
+        `<div class="panel panel-warning">
           <div class="panel-heading">
             <div class="panel-title">
               <div class="text-center text-uppercase">
-                Portfolio
+                <h4 class="text-capitalize">${user.firstname} ${user.lastname}</h4>
+                <div>
+                  Portfolio
+                </div>
               </div>
             </div>
           </div>
-          <table class="table">
+          <table class="table table-condensed">
             <thead>
               <tr>
-                <th>Symbol</th>
-                <th>Units</th>
-                <th>Cost Price</th>
-                <th>Current Price</th>
+                <td class="text-center font-bold">Stock</td>
+                <td class="text-center font-bold">Units</td>
+                <td class="text-center font-bold">Cost Price</td>
+                <td class="text-center font-bold">Current Price</td>
               </tr>
             </thead>
             <tbody>
@@ -68,12 +70,12 @@ class Portfolio {
         exists = true
 
         if ( tradeOrder.type == TradeOrder.Type.BUY ) {
-          portfolio.stocks[i].units     += tradeOrder.units
-          portfolio.stocks[i].costPrice += tradeOrder.tradePrice * tradeOrder.units
+          portfolio.stocks[i].units     += parseFloat(tradeOrder.units)
+          portfolio.stocks[i].costPrice += parseFloat(tradeOrder.tradePrice) * parseFloat(tradeOrder.units)
         } else if ( tradeOrder.type == TradeOrder.Type.SELL ) {
-          const units                    = Math.min(portfolio.stocks[i].units, tradeOrder.units)
-          portfolio.stocks[i].costPrice -= tradeOrder.tradePrice * units
-          portfolio.stocks[i].units     -= units
+          const units                    = Math.min(parseFloat(portfolio.stocks[i].units), parseFloat(tradeOrder.units))
+          portfolio.stocks[i].costPrice -= parseFloat(tradeOrder.tradePrice) * parseFloat(units)
+          portfolio.stocks[i].units     -= parseFloat(units)
         }
       }
     }
@@ -82,7 +84,7 @@ class Portfolio {
       const stock = {
         stockID: tradeOrder.stockID,
         units: tradeOrder.units,
-        costPrice: tradeOrder.units * tradeOrder.tradePrice
+        costPrice: parseFloat(tradeOrder.units) * parseFloat(tradeOrder.tradePrice)
       }
       portfolio.stocks.push(stock)
     }

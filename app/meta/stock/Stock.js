@@ -55,27 +55,29 @@ class Stock {
     })
 
     const htmlString =
-        `<table class="table table-condensed"`  +
-          `<thead>`                             +
-            `<tr>`                              +
-              `<td>`                            +
-                `Symbol`                        +
-              `</td>`                           +
-              `<td>`                            +
-                `Last Trade`                    +
-              `</td>`                           +
-              `<td>`                            +
-                `Change Value`                  +
-              `</td>`                           +
-              `<td>`                            +
-                `Change (%)`                    +
-              `</td>`                           +
-            `</tr>`                             +
-          `</thead>`                            +
-          `<tbody>`                             +
-            rows.join(' ')                      +
-          `</tbody>`                            +
-        `</table>`
+        `<div class="panel panel-info">
+            <table class="table table-condensed"
+              <thead>
+                <tr>
+                  <td>
+                    Symbol
+                  </td>
+                  <td>
+                    Last Trade
+                  </td>
+                  <td>
+                    Change Value
+                  </td>
+                  <td>
+                    Change (%)
+                  </td>
+                </tr>
+              </thead>
+              <tbody>`         +
+                rows.join(' ') +
+              `</tbody>
+            </table>
+        </div>`
 
     return htmlString
   }
