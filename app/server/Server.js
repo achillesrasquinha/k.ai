@@ -190,28 +190,35 @@ io.sockets.on('connection', (socket) => {
                 if ( err ) {
                   throw err
                 } else {
-                  Logger.info('Recieved user: ' + JSON.stringify(u))
-                  Logger.info('Stock Profile recieved: ' + JSON.stringify(u.portfolio))
+                  if ( u ) {
+                    Logger.info('Recieved user: ' + JSON.stringify(u))
+                    Logger.info('Stock Profile recieved: ' + JSON.stringify(u.portfolio))
 
-                  if ( _.isEmpty(u.portfolio.stocks) ) {
-                    Logger.info('User has no current stocks traded')
+                    if ( _.isEmpty(u.portfolio.stocks) ) {
+                      Logger.info('User has no current stocks traded')
 
-                    if ( tradeOrder.type == TradeOrder.Type.SELL ) {
-                      const content = 'Sorry, you have no stocks to sell.'
-                      const message = new Message(ServerConfig.kai.NAME, content)
-                      socket.emit('chat message', message)
+                      if ( tradeOrder.type == TradeOrder.Type.SELL ) {
+                        const content = 'Sorry, you have no stocks to sell.'
+                        const message = new Message(ServerConfig.kai.NAME, content)
+                        socket.emit('chat message', message)
+                      } else {
+                        const content = TradeOrder.toHTMLString(tradeOrder)
+                        const message = new Message(ServerConfig.kai.NAME, content)
+                        socket.emit('chat message', message)
+
+                        User.updatePortfolio(u, tradeOrder, (err, u) => {})
+                      }
                     } else {
+                      Logger.info('User has some stocks')
+                      User.updatePortfolio(u, tradeOrder, (err, u) => {})
                       const content = TradeOrder.toHTMLString(tradeOrder)
                       const message = new Message(ServerConfig.kai.NAME, content)
                       socket.emit('chat message', message)
-
-                      User.updatePortfolio(u, tradeOrder, (err, u) => {})
                     }
                   } else {
-                    Logger.info('User has some stocks')
-                    User.updatePortfolio(u, tradeOrder, (err, u) => {})
-                    const content = TradeOrder.toHTMLString(tradeOrder)
+                    const content = "Whoops! We can't seem to find you. Have you registered yet?"
                     const message = new Message(ServerConfig.kai.NAME, content)
+
                     socket.emit('chat message', message)
                   }
                 }
@@ -221,7 +228,6 @@ io.sockets.on('connection', (socket) => {
 
           })
         } else if ( intent == ServerConfig.kai.PORTFOLIO_DESCRIPTION ) {
-
           User.getUserByID(user.id, (err, u) => {
             const stockIDs = u.portfolio.stocks.map((stock) => {
               return stock.stockID

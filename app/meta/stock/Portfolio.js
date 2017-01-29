@@ -17,7 +17,7 @@ class Portfolio {
   static toHTMLString(portfolio, latestPrice) {
     const rows       = portfolio.stocks.map((stock, i) => {
 
-
+      Logger.info('stock.costPrice: ' + stock.costPrice)
       const row =
         `<tr>
           <td>${stock.stockID}</td>
