@@ -170,8 +170,10 @@ io.sockets.on('connection', (socket) => {
             Logger.info('response from google finance: ' + body)
 
             let hack     = body.replace('//', '')
+                hack     = hack.replace('[' , '')
+                hack     = hack.replace(']' , '')
             let result   = JSON.stringify(eval('(' + hack + ')'))
-                result   = JSON.parse(result[0])
+                result   = JSON.parse(result)
 
             if ( err ) {
               throw err
