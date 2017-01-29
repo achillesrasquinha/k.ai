@@ -8,6 +8,7 @@
 
 ### Installation
 First, head over to [nodejs.org](https://nodejs.org) and install Node.js.
+You'd also require MongoDB and SASS for development dependencies
 
 Next, go ahead and clone the repository onto your disk.
 ```bash
