@@ -1,3 +1,5 @@
+import Request from 'request'
+
 import TradeOrder from './../../meta/stock/TradeOrder'
 import Logger from './../../utils/Logger'
 
@@ -12,49 +14,46 @@ class Portfolio {
     return this.portfolio
   }
 
-  static toHTMLString(portfolio, callback) {
-    Request.get({ url:'http://finance.google.com/finance/info?client=ig&q=NSE:' + stockID}, (err, response, body) => {
-      Logger.info('response from google finance: ' + body)
+  static toHTMLString(portfolio, latestPrice) {
+    const rows       = portfolio.stocks.map((stock, i) => {
 
-      let hack     = body.replace('//', '')
-          hack     = body.replace('[',  '')
-          hack     = body.replace(']',  '')
-      let result   = JSON.stringify(eval('(' + hack + ')'))
-          result   = JSON.parse(result)
 
-      if ( err ) {
-        throw err
-        // you may have to respond the user
-      } else {
-        Logger.info('JSON result: ' + result)
-        const tradePrice = parseFloat(result.l_fix)
-        Logger.info('trading price: ' + tradePrice)
+      const row =
+        `<tr>
+          <td>${stock.stockID}</td>
+          <td>${stock.units}</td>
+          <td>${parseFloat(stock.costPrice).toFixed(2)}</td>
+          <td>${latestPrice[i].l_fix}</td>
+        </tr>`
 
-        `<div class="panel panel-warning">
-          <div class="panel-heading">
-            <div class="panel-title">
-              <div class="text-center text-uppercase">
-                Portfolio
-              </div>
+      return row
+    }).join('')
+
+    const htmlString =
+      `<div class="panel panel-warning">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <div class="text-center text-uppercase">
+              Portfolio
             </div>
           </div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Symbol</th>
-                <th>Units</th>
-                <th>Cost Price</th>
-                <th>Current Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              
-            </tbody>
-          </table>
         </div>
-        `
-      }
-    })
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Units</th>
+              <th>Cost Price</th>
+              <th>Current Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>`
+
+      return htmlString
   }
 
   static update(portfolio, tradeOrder) {

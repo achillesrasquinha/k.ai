@@ -23,6 +23,7 @@ import User from './../models/account/User'
 import Message from './../meta/chat/Message'
 import Stock from './../meta/stock/Stock'
 import TradeOrder from './../meta/stock/TradeOrder'
+import Portfolio from './../meta/stock/Portfolio'
 import { signUpUserRouter, signInUserRouter } from './Routers'
 import Logger from './../utils/Logger'
 
@@ -220,11 +221,28 @@ io.sockets.on('connection', (socket) => {
         } else if ( intent == ServerConfig.kai.PORTFOLIO_DESCRIPTION ) {
 
           User.getUserByID(user.id, (err, u) => {
-            const portfolio = u.portfolio
-            Portfolio.toHTMLString(portfolio, (err, content) => {
-              const message = new Message(ServerConfig.kai.NAME, content)
+            const stockIDs = u.portfolio.stocks.map((stock) => {
+              return stock.stockID
+            }).join(',')
 
-              socket.emit('chat messaage', messaage)
+            Request.get({ url:'http://finance.google.com/finance/info?client=ig&q=NSE:' + stockIDs}, (err, response, body) => {
+              Logger.info('response from google finance: ' + body)
+
+              let hack     = body.replace('//', '')
+              let result   = JSON.stringify(eval('(' + hack + ')'))
+                  result   = JSON.parse(result)
+
+              if ( err ) {
+                throw err
+                // you may have to respond the user
+              } else {
+                Logger.info('JSON result: ' + JSON.stringify(result))
+
+                const content   = Portfolio.toHTMLString(u.portfolio, result)
+                const message   = new Message(ServerConfig.kai.NAME, content)
+
+                socket.emit('chat message', message)
+              }
             })
           })
         }
