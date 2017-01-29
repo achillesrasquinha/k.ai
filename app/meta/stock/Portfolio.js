@@ -30,27 +30,28 @@ class Portfolio {
     }).join('')
 
     const htmlString =
-      `<div class="panel panel-warning">
-        <div class="panel-heading">
-          <div class="panel-title">
-            <div class="text-center text-uppercase">
-              Portfolio
+        `<div class="panel panel-sucess">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <div class="text-center text-uppercase">
+                Portfolio
+              </div>
             </div>
           </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Units</th>
+                <th>Cost Price</th>
+                <th>Current Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
         </div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Units</th>
-              <th>Cost Price</th>
-              <th>Current Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
       </div>`
 
       return htmlString
@@ -79,7 +80,10 @@ class Portfolio {
 
     if ( !exists ) {
       const stock = {
-        stockID: tradeOrder.stockID, units: tradeOrder.units }
+        stockID: tradeOrder.stockID,
+        units: tradeOrder.units,
+        costPrice: tradeOrder.units * tradeOrder.tradePrice
+      }
       portfolio.stocks.push(stock)
     }
 
