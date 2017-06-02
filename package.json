@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A female chatbot assistant",
   "scripts": {
+    "install": "npm install . && bower install .",
     "server": "nodemon --watch app/server --exec babel-node -- app/server/Server",
     "styles": "sass --watch app/styles/App.scss:app/public/css/styles.min.css --style compressed --sourcemap=none",
     "start": "concurrently --kill-others \"npm run styles\" \"npm run server\""

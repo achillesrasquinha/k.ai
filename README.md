@@ -20,10 +20,16 @@ Install bower globally
 $ npm install -g bower
 ```
 
-Install necessary dependencies.
+Install necessary `npm` dependencies.
 ```bash
-$ npm run install
+$ npm install .
 ```
+
+Install necessary `bower` dependencies.
+```bash
+$ bower install
+```
+
 This may take some time, so go and grab a cup of coffee!
 
 ### Usage
